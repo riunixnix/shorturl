@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	//"errors"
-	"fmt"
+	//"fmt"
 	//"io/ioutil"
 	"net/http"
 	//"regexp"
@@ -15,28 +15,29 @@ type url struct {
 }
 
 type data_req_struct struct {
-	Url string
+	Url string `json:"url"`
+}
+
+type data_res_struct struct {
+	Short string `json:"short"`
 }
 
 func process_handler(res http.ResponseWriter, req *http.Request) {
-	decoder := json.NewDecoder(req.Body)
+
 	var data_req data_req_struct
-	err := decoder.Decode(&data_req)
-	if is_error(res, req, err) {
-		fmt.Println("aaa=" + err.Error())
+	err := json.NewDecoder(req.Body).Decode(&data_req)
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Println("hello" + data_req.Url)
+	//processing part
+	short_url := data_req.Url
 
-}
-
-func is_error(res http.ResponseWriter, req *http.Request, err error) bool {
-	if err != nil {
-		http.Error(res, err.Error(), http.StatusInternalServerError)
-		return true
-	}
-	return false
+	//return result
+	data_res := data_res_struct{Short: short_url}
+	res.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(res).Encode(data_res)
 }
 
 func main() {
