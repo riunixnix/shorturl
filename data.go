@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/speps/go-hashids"
 	"os"
-	"reflect"
 	"strings"
 )
+
+var HashSalt = "H3ll0:H3ll0!@@#$"
 
 type dbConfig struct {
 	Host string
@@ -40,16 +42,12 @@ func connect_db() (*sql.DB, error) {
 	conf := load_db_conf(conf_path)
 
 	str_connect := conf.User + ":" + conf.Pass + "@tcp(" + conf.Host + ")/" + conf.Db
-	fmt.Println(str_connect)
 
 	db, err := sql.Open("mysql", str_connect)
-	fmt.Println(reflect.TypeOf(db))
 	if err != nil {
 		fmt.Println("err=" + err.Error())
 		return db, err
 	}
-
-	defer db.Close()
 
 	err = db.Ping()
 	if err != nil {
@@ -59,32 +57,53 @@ func connect_db() (*sql.DB, error) {
 	return db, nil
 }
 
-func save_new_url(url string) string {
+func save_new_url(url string) int64 {
 	CON, err := connect_db()
 	if err != nil {
-		return ""
+		return 0
 	}
 
 	url = strings.Trim(url, " ")
 	var urls_row urls
-	var room_id int64
-	err = CON.QueryRow("select id,full_url from urls where full_url=?", url).Scan(&urls_row.Full_url)
-	room_id = 0
+	var short_id int64
+	err = CON.QueryRow("select id,full_url from urls where full_url=?", url).Scan(&urls_row.Id, &urls_row.Full_url)
+	short_id = 0
 	switch {
 	case err == sql.ErrNoRows:
 		res, err := CON.Exec("insert into urls set full_url=?", url)
 		if err != nil {
-
+			return 0
 		} else {
 			id, err := res.LastInsertId()
 			if err != nil {
+				return 0
 			}
-			room_id = id
+			short_id = id
 		}
 	case err != nil:
-		panic(err.Error())
+		return 0
 	default:
-		room_id = urls_row.Id
+		short_id = urls_row.Id
 	}
-	return string(room_id)
+
+	return short_id
+}
+
+func get_short_url(url string) string {
+	url_id := save_new_url(url)
+
+	if url_id <= 0 {
+		return ""
+	}
+
+	hd := hashids.NewData()
+	hd.Salt = HashSalt
+	hd.MinLength = 3
+
+	h := hashids.NewWithData(hd)
+	id, err := h.EncodeInt64([]int64{url_id})
+	if err != nil {
+		return ""
+	}
+	return id
 }

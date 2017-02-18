@@ -26,20 +26,29 @@ func shortening(url string) string {
 	return ""
 }
 
-func process_handler(res http.ResponseWriter, req *http.Request) {
+func redirect_handler(res http.ResponseWriter, req *http.Request) {
+	path := req.URL.Path[1:]
+	if path == "" || is_alpha_numeric(path) != true {
+		error_func(http.StatusNotFound, res, req)
+		return
+	}
+	fmt.Println("valid = ", path)
+
+}
+
+func shorten_handler(res http.ResponseWriter, req *http.Request) {
 
 	var data_req data_req_struct
+	base_url := get_base_url(req)
 	err := json.NewDecoder(req.Body).Decode(&data_req)
 	if err != nil {
-		http.Error(res, err.Error(), http.StatusInternalServerError)
+		error_func(http.StatusBadRequest, res, req)
 		return
 	}
 
 	//processing part
-	short_url := data_req.Url
-	//connect_db()
-	id := save_new_url(data_req.Url)
-	fmt.Println(id)
+	short_id := get_short_url(data_req.Url)
+	short_url := base_url + "/" + short_id
 
 	//return result
 	data_res := data_res_struct{Short: short_url}
@@ -48,6 +57,7 @@ func process_handler(res http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/shorten/", process_handler)
+	http.HandleFunc("/shorten/", shorten_handler)
+	http.HandleFunc("/", redirect_handler)
 	http.ListenAndServe(":9090", nil)
 }
