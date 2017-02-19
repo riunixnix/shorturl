@@ -17,8 +17,8 @@ git clone git@github.com:riunixnix/shorturl.git
 
 cd shorturl
 
-fab host_setting:HOSTNAME,server_username deploy
-#example :  fab host_setting:127.0.0.1:2222,vagrant deploy
+fab host_setting:HOSTNAME,server_username install
+#example :  fab host_setting:127.0.0.1:2222,vagrant install
 ```
 
 Then ssh to the server, then go to GOPATH
@@ -27,7 +27,7 @@ Then ssh to the server, then go to GOPATH
 
 cd $GOPATH
 
-env conf_path="conf/" ./bin/shorturl
+env conf_path="$GOPATH/conf" ./bin/shorturl
 ```
 
 **Hashids**

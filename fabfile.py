@@ -17,8 +17,8 @@ def host_setting(host,user):
 
 def install_mysql():
 	print "Installing Mysql"			
-	# run("sudo apt-get install -y mysql-server")
-	# run("mysql_secure_installation")
+	run("sudo apt-get install -y mysql-server")
+	run("mysql_secure_installation")
 
 	db_host 	= raw_input("MySql Host ?")
 	db_user 	= raw_input("MySql Username ?")
@@ -75,13 +75,13 @@ def reload_script():
 	run('go get -u %s' % lib_needed[project_idx])
 	run('go install %s' % lib_needed[project_idx])	
 
-def deploy():
+def install():
 	#run("source ~/.bashrc")	
 
 	with settings(warn_only=True):
-		#update()
+		update()
 
-		#install_golang()
+		install_golang()
 		
 		install_golang_lib()
 		
