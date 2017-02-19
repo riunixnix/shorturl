@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS shorturl;
+use shorturl;
 
 CREATE TABLE IF NOT EXISTS `urls3` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
