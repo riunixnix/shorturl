@@ -27,8 +27,12 @@ Then ssh to the server, then go to GOPATH
 
 cd $GOPATH
 
-env conf_path="$GOPATH/conf" ./bin/shorturl
+env conf_path="$GOPATH/conf" ./bin/shorturl #for run the webserver
+
+fab host_setting:127.0.0.1:2222,vagrant reload_script #for pull latest update
 ```
+
+
 
 **Hashids**
 
