@@ -23,20 +23,22 @@ def install_mysql():
 	db_host 	= raw_input("MySql Host ?")
 	db_user 	= raw_input("MySql Username ?")
 	db_password = raw_input("MySql Password ?")
+	db_name     = "shorturl"
 
 	conf = {
 		"Host" : db_host,
 		"User" : db_user,
 		"Pass" : db_password,
-		"Db" : "shorturl"
+		"Db" : db_name
 	}
 	conf = json.dumps(conf)
 	with cd(run("echo $GOPATH")):
 		if not exists('conf'):
 			run("mkdir conf")
 		run("echo '%s' > conf/db.json" % conf)
-	sql_file = "src/"+lib_needed[project_idx]+"/db.sql"
-	run("mysql -u %s -p%s shorturl < %s" % (db_user,db_password,sql_file))
+		sql_file = "src/"+lib_needed[project_idx]+"/db.sql"
+		run("mysql -u %s -p%s -e \"CREATE DATABASE IF NOT EXISTS '%s'\"" % (db_user,db_password,db_name))
+		run("mysql -u %s -p%s %s < %s" % (db_user,db_password,db_name,sql_file))
 
 def install_golang():
 	with cd(tmp_folder):	
@@ -66,7 +68,7 @@ def install_golang_lib():
 	with cd(run("echo $GOPATH")):
 		for lib in lib_needed:
 			print "Installing %s ..." % lib
-			run('go get %s' % lib)
+			run('go get -u %s' % lib)
 			run('go install %s' % lib)
 
 
@@ -78,7 +80,7 @@ def deploy():
 
 		#install_golang()
 		
-		install_golang_lib()
+		#install_golang_lib()
 		
 		install_mysql()
 			
