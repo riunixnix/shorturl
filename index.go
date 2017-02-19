@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	//"errors"
-	"fmt"
+	//"fmt"
 	//"io/ioutil"
 	"net/http"
 	//"regexp"
@@ -22,35 +22,43 @@ type data_res_struct struct {
 	Short string `json:"short"`
 }
 
-func shortening(url string) string {
-	return ""
-}
-
 func redirect_handler(res http.ResponseWriter, req *http.Request) {
 	path := req.URL.Path[1:]
+
+	//----------------Validate-------------------
 	if path == "" || is_alpha_numeric(path) != true {
 		error_func(http.StatusNotFound, res, req)
 		return
 	}
-	fmt.Println("valid = ", path)
 
+	//------------Processing part-----------------
+	url := get_full_url(path)
+	if url == "" {
+		error_func(http.StatusNotFound, res, req)
+		return
+	}
+
+	//------------Redirect------------------------
+	http.Redirect(res, req, url, http.StatusMovedPermanently)
 }
 
 func shorten_handler(res http.ResponseWriter, req *http.Request) {
 
 	var data_req data_req_struct
 	base_url := get_base_url(req)
+
+	//----------------Validate-------------------
 	err := json.NewDecoder(req.Body).Decode(&data_req)
-	if err != nil {
+	if err != nil || data_req.Url == "" {
 		error_func(http.StatusBadRequest, res, req)
 		return
 	}
 
-	//processing part
+	//------------Processing part-----------------
 	short_id := get_short_url(data_req.Url)
 	short_url := base_url + "/" + short_id
 
-	//return result
+	//------------Return result-------------------
 	data_res := data_res_struct{Short: short_url}
 	res.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(res).Encode(data_res)
