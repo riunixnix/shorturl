@@ -35,7 +35,7 @@ func connect_db() (*sql.DB, error) {
 	conf := load_db_conf(conf_path)
 
 	str_connect := conf.User + ":" + conf.Pass + "@tcp(" + conf.Host + ")/" + conf.Db
-
+	fmt.Println(str_connect)
 	db, err := sql.Open("mysql", str_connect)
 	if err != nil {
 		fmt.Println("err=" + err.Error())

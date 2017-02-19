@@ -21,6 +21,14 @@ fab host_setting:HOSTNAME,server_username deploy
 #example :  fab host_setting:127.0.0.1:2222,vagrant deploy
 ```
 
+Then ssh to the server, then go to GOPATH
+```
+#!bash
+
+cd $GOPATH
+
+env conf_path="conf/" ./bin/shorturl
+```
 
 **Hashids**
 
