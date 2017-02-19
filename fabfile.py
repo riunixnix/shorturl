@@ -71,6 +71,9 @@ def install_golang_lib():
 			run('go get -u %s' % lib)
 			run('go install %s' % lib)
 
+def reload_script():
+	run('go get -u %s' % lib_needed[project_idx])
+	run('go install %s' % lib_needed[project_idx])	
 
 def deploy():
 	#run("source ~/.bashrc")	
