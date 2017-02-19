@@ -80,7 +80,7 @@ def deploy():
 
 		#install_golang()
 		
-		#install_golang_lib()
+		install_golang_lib()
 		
 		install_mysql()
 			

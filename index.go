@@ -63,5 +63,5 @@ func shorten_handler(res http.ResponseWriter, req *http.Request) {
 func main() {
 	http.HandleFunc("/shorten/", shorten_handler)
 	http.HandleFunc("/", redirect_handler)
-	http.ListenAndServe(":9090", nil)
+	http.ListenAndServe(":80", nil)
 }
