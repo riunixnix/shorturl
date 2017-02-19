@@ -1,5 +1,6 @@
 # Shorturl
 Simple Restful API for convert website url become shorter.
+The Aplication use port 9090 to access it.
 
 # Language 
 Go ( Go Language ), MySql, Fabric
