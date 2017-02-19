@@ -2,11 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	//"errors"
-	//"fmt"
-	//"io/ioutil"
 	"net/http"
-	//"regexp"
 )
 
 type url struct {
