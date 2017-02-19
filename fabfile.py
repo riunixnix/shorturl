@@ -37,7 +37,7 @@ def install_mysql():
 			run("mkdir conf")
 		run("echo '%s' > conf/db.json" % conf)
 		sql_file = "src/"+lib_needed[project_idx]+"/db.sql"
-		run("mysql -u %s -p%s -e \"DROP DATABASE '%s';CREATE DATABASE '%s'\"" % (db_user,db_password,db_name,db_name))
+		run("mysql -u %s -p%s -e \"DROP DATABASE %s;CREATE DATABASE %s\"" % (db_user,db_password,db_name,db_name))
 		run("mysql -u %s -p%s %s < %s" % (db_user,db_password,db_name,sql_file))
 
 def install_golang():
@@ -80,7 +80,7 @@ def deploy():
 
 		#install_golang()
 		
-		install_golang_lib()
+		#install_golang_lib()
 		
 		install_mysql()
 			
