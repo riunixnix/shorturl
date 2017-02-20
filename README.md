@@ -30,7 +30,19 @@ Then ssh to the server, then go to GOPATH
 
 cd $GOPATH
 
-env conf_path="$GOPATH/conf" ./bin/shorturl #for run the webserver
+nohup env conf_path="$GOPATH/conf" ./bin/shorturl > ~/shorturl.log& #for run the webserver
 
 ```
 
+For testing from inside server 
+```
+#!bash
+curl -sX POST -H 'Content-Type: application/json' 'http://localhost:9090/shorten/' -d '{"url":"http://a.very.long.urlff"}'
+
+```
+
+For better performance , can combine with nginx and setting proxy to the local.
+
+Todo Later:
+- Will Add auto install for nginx and configuration
+- make the app run as service

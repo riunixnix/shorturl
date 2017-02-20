@@ -9,6 +9,8 @@ env.hosts = []
 env.shell = "/bin/bash -l -c -i"
 project_idx  = 2
 lib_needed = ['github.com/speps/go-hashids','github.com/go-sql-driver/mysql','github.com/riunixnix/shorturl']
+tmp_folder = "~/tmp_folder"
+
 
 def host_setting(host,user):    
     env.hosts.append(host)
@@ -20,7 +22,7 @@ def install_mysql():
 	run("sudo apt-get install -y mysql-server")
 	run("mysql_secure_installation")
 
-	db_host 	= raw_input("MySql Host ?")
+	db_host 	= raw_input("MySql Host (example: localhost:3306?")
 	db_user 	= raw_input("MySql Username ?")
 	db_password = raw_input("MySql Password ?")
 	db_name     = "shorturl"
@@ -57,7 +59,7 @@ def update():
 	run("sudo apt-get -y install clang zip unzip")
 	run("sudo apt-get -y install git")
 
-	tmp_folder = "~/tmp_folder"
+	
 	if not exists(tmp_folder): 
 		print "Creating temporary folder"
 		run("mkdir -p %s;" % tmp_folder)
